@@ -60,6 +60,9 @@ void setStandards(HANDLE hComm) {
 	int Status;
 	DCB dcbSerialParams = { 0 };
 	dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
+	FILE *file;
+
+	printf("Setting standards for Com Port...\n");
 
 	Status = GetCommState(hComm, &dcbSerialParams);
 
@@ -70,6 +73,15 @@ void setStandards(HANDLE hComm) {
 
 	SetCommState(hComm, &dcbSerialParams);
 
+	Sleep(1000);
+	printf("Standards set successfully!\n");
+
+	file = fopen("/ComStat.txt", "w+");
+	fputs("BaudRate : %d\nByteSize : %d\nStopBits : %d\n,Parity : %d", dcbSerialParams.BaudRate, dcbSerialParams.ByteSize,
+		dcbSerialParams.StopBits, dcbSerialParams.Parity);
+	fclose(file);
+
+	printf("Logged to ComStat.txt\n");
 	setTimeouts();
 }
 
