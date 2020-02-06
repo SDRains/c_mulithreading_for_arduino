@@ -1,0 +1,4 @@
+BaudRate : 9600
+ByteSize : 8
+StopBits : 0
+,Parity : 0

@@ -60,7 +60,7 @@ void setStandards(HANDLE hComm) {
 	int Status;
 	DCB dcbSerialParams = { 0 };
 	dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
-	FILE *file;
+	FILE *fp;
 
 	printf("Setting standards for Com Port...\n");
 
@@ -68,7 +68,7 @@ void setStandards(HANDLE hComm) {
 
 	dcbSerialParams.BaudRate = CBR_9600;	// Setting BaudRate = 9600
 	dcbSerialParams.ByteSize = 8;			// Setting ByteSize = 8
-	dcbSerialParams.StopBits = ONESTOPBIT;	// Setting StopBits = 1
+	dcbSerialParams.StopBits = ONESTOPBIT;	// Setting StopBits = 0
 	dcbSerialParams.Parity = NOPARITY;		// Setting Parity = None
 
 	SetCommState(hComm, &dcbSerialParams);
@@ -76,10 +76,9 @@ void setStandards(HANDLE hComm) {
 	Sleep(1000);
 	printf("Standards set successfully!\n");
 
-	file = fopen("/ComStat.txt", "w+");
-	fputs("BaudRate : %d\nByteSize : %d\nStopBits : %d\n,Parity : %d", dcbSerialParams.BaudRate, dcbSerialParams.ByteSize,
-		dcbSerialParams.StopBits, dcbSerialParams.Parity);
-	fclose(file);
+	fp = fopen("\ComStat.txt", "w");
+	fprintf(fp, "BaudRate : %d\nByteSize : %d\nStopBits : %d\nParity : %d", dcbSerialParams.BaudRate, dcbSerialParams.ByteSize, dcbSerialParams.StopBits, dcbSerialParams.Parity);
+	fclose(fp);
 
 	printf("Logged to ComStat.txt\n");
 	setTimeouts();
@@ -88,6 +87,7 @@ void setStandards(HANDLE hComm) {
 void setTimeouts() {
 	COMMTIMEOUTS timeouts = { 0 };
 
+	printf("Setting timeouts for Com Port...\n");
 	// All in milliseconds
 	timeouts.ReadIntervalTimeout = 50;
 	timeouts.ReadTotalTimeoutConstant = 50;
